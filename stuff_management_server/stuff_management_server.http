@@ -1,0 +1,117 @@
+@stuff_management_server_HostAddress = http://localhost:5031
+
+GET {{stuff_management_server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+### 获取所有类别
+GET https://localhost:7001/api/Category
+Accept: application/json
+
+### 获取类别树结构
+GET https://localhost:7001/api/Category/tree
+Accept: application/json
+
+### 获取特定类别
+GET https://localhost:7001/api/Category/1
+Accept: application/json
+
+### 创建新类别
+POST https://localhost:7001/api/Category
+Content-Type: application/json
+
+{
+  "name": "运动用品",
+  "description": "各种运动器材和装备",
+  "icon": "sports",
+  "color": "#17a2b8",
+  "sortOrder": 5
+}
+
+### 更新类别
+PUT https://localhost:7001/api/Category/1
+Content-Type: application/json
+
+{
+  "categoryId": 1,
+  "name": "电子产品",
+  "description": "各种电子设备和配件",
+  "icon": "electronics",
+  "color": "#007bff",
+  "sortOrder": 1,
+  "isActive": true
+}
+
+### 删除类别
+DELETE https://localhost:7001/api/Category/6
+
+### 获取所有物品
+GET https://localhost:7001/api/Item
+Accept: application/json
+
+### 按类别筛选物品
+GET https://localhost:7001/api/Item?categoryId=1
+Accept: application/json
+
+### 按状态筛选物品
+GET https://localhost:7001/api/Item?status=Active
+Accept: application/json
+
+### 搜索物品
+GET https://localhost:7001/api/Item?searchTerm=手机
+Accept: application/json
+
+### 获取特定物品
+GET https://localhost:7001/api/Item/1
+Accept: application/json
+
+### 创建新物品
+POST https://localhost:7001/api/Item
+Content-Type: application/json
+
+{
+  "name": "iPhone 15",
+  "subCategory": "智能手机",
+  "brand": "Apple",
+  "model": "iPhone 15",
+  "status": 0,
+  "location": "卧室",
+  "notes": "新买的手机，性能很好",
+  "imageUrl": "",
+  "price": 5999.00,
+  "quantity": 1,
+  "purchaseDate": "2024-01-15T00:00:00Z",
+  "condition": 10,
+  "tags": "手机,苹果,电子产品",
+  "categoryId": 1
+}
+
+### 更新物品
+PUT https://localhost:7001/api/Item/1
+Content-Type: application/json
+
+{
+  "itemId": 1,
+  "name": "iPhone 15",
+  "subCategory": "智能手机",
+  "brand": "Apple",
+  "model": "iPhone 15",
+  "status": 0,
+  "location": "卧室",
+  "notes": "新买的手机，性能很好，已经使用一个月",
+  "imageUrl": "",
+  "price": 5999.00,
+  "quantity": 1,
+  "purchaseDate": "2024-01-15T00:00:00Z",
+  "condition": 9,
+  "tags": "手机,苹果,电子产品,常用",
+  "categoryId": 1
+}
+
+### 删除物品
+DELETE https://localhost:7001/api/Item/1
+
+### 获取物品统计信息
+GET https://localhost:7001/api/Item/statistics
+Accept: application/json
+
+###
