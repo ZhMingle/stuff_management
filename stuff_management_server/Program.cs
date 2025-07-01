@@ -26,6 +26,18 @@ namespace stuff_management_server
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+
+                // 自动打开 Swagger UI 页面
+                var url = "http://localhost:5031/swagger";
+                try
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = url,
+                        UseShellExecute = true
+                    });
+                }
+                catch { }
             }
 
             app.UseHttpsRedirection();
