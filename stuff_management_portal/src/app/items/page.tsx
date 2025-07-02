@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { itemService, Item, categoryService, Category } from '../../services';
+import AddItemModal from '../../components/modals/AddItemModal';
 
 export default function ItemsPage() {
   const [items, setItems] = useState<Item[]>([]);
@@ -9,6 +10,7 @@ export default function ItemsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   // 获取物品列表
   const fetchItems = async () => {
@@ -44,7 +46,7 @@ export default function ItemsPage() {
 
     try {
       setLoading(true);
-      const data = await itemService.searchItems(searchQuery);
+      const data = await itemService.getItems(undefined, undefined, searchQuery);
       setItems(data);
       setError(null);
     } catch (err) {
@@ -63,7 +65,7 @@ export default function ItemsPage() {
 
     try {
       await itemService.deleteItem(id);
-      setItems(items.filter(item => item.id !== id));
+      setItems(items.filter(item => item.itemId !== id));
       setError(null);
     } catch (err) {
       setError('删除物品失败');
@@ -74,8 +76,24 @@ export default function ItemsPage() {
   // 获取分类名称
   const getCategoryName = (categoryId?: number) => {
     if (!categoryId) return '未分类';
-    const category = categories.find(cat => cat.id === categoryId);
+    const category = categories.find(cat => cat.categoryId === categoryId);
     return category?.name || '未分类';
+  };
+
+  // 处理添加物品成功
+  const handleAddItemSuccess = (newItem: Item) => {
+    setItems([newItem, ...items]);
+    setError(null);
+  };
+
+  // 打开添加物品弹窗
+  const openAddModal = () => {
+    setIsAddModalOpen(true);
+  };
+
+  // 关闭添加物品弹窗
+  const closeAddModal = () => {
+    setIsAddModalOpen(false);
   };
 
   useEffect(() => {
@@ -111,7 +129,10 @@ export default function ItemsPage() {
             搜索
           </button>
         </div>
-        <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+        <button 
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+          onClick={openAddModal}
+        >
           添加物品
         </button>
       </div>
@@ -125,30 +146,56 @@ export default function ItemsPage() {
             <thead>
               <tr className="border-b">
                 <th className="text-left py-2">名称</th>
-                <th className="text-left py-2">描述</th>
+                <th className="text-left py-2">品牌/型号</th>
                 <th className="text-left py-2">分类</th>
+                <th className="text-left py-2">状态</th>
+                <th className="text-left py-2">位置</th>
+                <th className="text-left py-2">价格</th>
                 <th className="text-left py-2">操作</th>
               </tr>
             </thead>
             <tbody>
               {items.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="text-center py-8 text-gray-500">
+                  <td colSpan={7} className="text-center py-8 text-gray-500">
                     暂无物品数据
                   </td>
                 </tr>
               ) : (
                 items.map((item) => (
-                  <tr key={item.id} className="border-b hover:bg-gray-50">
+                  <tr key={item.itemId} className="border-b hover:bg-gray-50">
                     <td className="py-2">{item.name}</td>
-                    <td className="py-2 text-gray-600">{item.description || '-'}</td>
+                    <td className="py-2 text-gray-600">
+                      {item.brand && item.model ? `${item.brand} ${item.model}` : 
+                       item.brand || item.model || '-'}
+                    </td>
                     <td className="py-2">{getCategoryName(item.categoryId)}</td>
+                    <td className="py-2">
+                      <span className={`px-2 py-1 rounded text-xs ${
+                        item.status === 0 ? 'bg-green-100 text-green-800' :
+                        item.status === 1 ? 'bg-yellow-100 text-yellow-800' :
+                        item.status === 2 ? 'bg-red-100 text-red-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        {item.status === 0 ? '正常使用' :
+                         item.status === 1 ? '闲置' :
+                         item.status === 2 ? '损坏' :
+                         item.status === 3 ? '丢失' :
+                         item.status === 4 ? '已售出' :
+                         item.status === 5 ? '已捐赠' :
+                         item.status === 6 ? '过期' : '未知'}
+                      </span>
+                    </td>
+                    <td className="py-2">{item.location || '-'}</td>
+                    <td className="py-2">
+                      {item.price ? `¥${item.price.toFixed(2)}` : '-'}
+                    </td>
                     <td className="py-2">
                       <button className="text-blue-600 mr-2 hover:underline">详情</button>
                       <button className="text-green-600 mr-2 hover:underline">编辑</button>
                       <button 
                         className="text-red-600 hover:underline"
-                        onClick={() => item.id && handleDeleteItem(item.id)}
+                        onClick={() => item.itemId && handleDeleteItem(item.itemId)}
                       >
                         删除
                       </button>
@@ -160,6 +207,13 @@ export default function ItemsPage() {
           </table>
         )}
       </div>
+
+      {/* 添加物品弹窗 */}
+      <AddItemModal
+        isOpen={isAddModalOpen}
+        onClose={closeAddModal}
+        onSuccess={handleAddItemSuccess}
+      />
     </div>
   );
 } 

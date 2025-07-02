@@ -73,15 +73,48 @@ namespace stuff_management_server.Controllers
 
         // POST: api/Item
         [HttpPost]
-        public async Task<ActionResult<Item>> CreateItem(Item item)
+        public async Task<ActionResult<Item>> CreateItem([FromBody] Item item)
         {
-            item.CreatedAt = DateTime.UtcNow;
-            item.UpdatedAt = DateTime.UtcNow;
-            
-            _context.Items.Add(item);
-            await _context.SaveChangesAsync();
+            try
+            {
+                // 调试：记录接收到的数据
+                Console.WriteLine($"接收到创建物品请求: {System.Text.Json.JsonSerializer.Serialize(item)}");
+                
+                // 验证必填字段
+                if (string.IsNullOrWhiteSpace(item.Name))
+                {
+                    Console.WriteLine("错误: 物品名称为空");
+                    return BadRequest(new { error = "物品名称不能为空" });
+                }
 
-            return CreatedAtAction(nameof(GetItem), new { id = item.ItemId }, item);
+                // 设置默认值
+                item.CreatedAt = DateTime.UtcNow;
+                item.UpdatedAt = DateTime.UtcNow;
+                
+                // 确保必填字段有默认值
+                if (string.IsNullOrEmpty(item.SubCategory)) item.SubCategory = "";
+                if (string.IsNullOrEmpty(item.Brand)) item.Brand = "";
+                if (string.IsNullOrEmpty(item.Model)) item.Model = "";
+                if (string.IsNullOrEmpty(item.Location)) item.Location = "";
+                if (string.IsNullOrEmpty(item.Notes)) item.Notes = "";
+                if (string.IsNullOrEmpty(item.ImageUrl)) item.ImageUrl = "";
+                if (string.IsNullOrEmpty(item.Tags)) item.Tags = "";
+                if (item.Quantity <= 0) item.Quantity = 1;
+                
+                Console.WriteLine($"处理后的物品数据: {System.Text.Json.JsonSerializer.Serialize(item)}");
+                
+                _context.Items.Add(item);
+                await _context.SaveChangesAsync();
+
+                Console.WriteLine($"物品创建成功，ID: {item.ItemId}");
+                return CreatedAtAction(nameof(GetItem), new { id = item.ItemId }, item);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"创建物品时发生异常: {ex.Message}");
+                Console.WriteLine($"异常堆栈: {ex.StackTrace}");
+                return BadRequest(new { error = ex.Message, details = ex.ToString() });
+            }
         }
 
         // PUT: api/Item/5

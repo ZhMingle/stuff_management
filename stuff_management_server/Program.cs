@@ -19,6 +19,17 @@ namespace stuff_management_server
             builder.Services.AddDbContext<StuffManagementContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            // 添加 CORS 配置
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -41,6 +52,9 @@ namespace stuff_management_server
             }
 
             app.UseHttpsRedirection();
+
+            // 启用 CORS
+            app.UseCors("AllowAll");
 
             app.UseAuthorization();
 
