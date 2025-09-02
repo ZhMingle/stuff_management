@@ -2,15 +2,17 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useI18n } from '../i18n/I18nProvider';
 
 export default function Navigation() {
   const pathname = usePathname();
+  const { t, language, setLanguage } = useI18n();
 
   const navItems = [
-    { href: '/items', label: '物品管理' },
-    { href: '/categories', label: '分类管理' },
-    { href: '/dashboard', label: '仪表板' },
-    { href: '/settings', label: '设置' },
+    { href: '/items', label: t('nav_items') },
+    { href: '/categories', label: t('nav_categories') },
+    { href: '/dashboard', label: t('nav_dashboard') },
+    { href: '/settings', label: t('nav_settings') },
   ];
 
   return (
@@ -20,7 +22,7 @@ export default function Navigation() {
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
               <Link href="/items" className="text-xl font-bold text-gray-900">
-                物品管理系统
+                {t('app_title')}
               </Link>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
@@ -38,6 +40,14 @@ export default function Navigation() {
                 </Link>
               ))}
             </div>
+          </div>
+          <div className="flex items-center">
+            <button
+              className="text-sm px-3 py-1 border rounded hover:bg-gray-50"
+              onClick={() => setLanguage(language === 'zh' ? 'en' : 'zh')}
+            >
+              {language === 'zh' ? t('lang_en') : t('lang_zh')}
+            </button>
           </div>
         </div>
       </div>

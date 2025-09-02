@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Item, CreateItemRequest, categoryService, itemService, Category } from '../../services';
+import { useI18n } from '../../components/i18n/I18nProvider';
 
 interface AddItemModalProps {
   isOpen: boolean;
@@ -10,6 +11,7 @@ interface AddItemModalProps {
 }
 
 export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModalProps) {
+  const { t } = useI18n();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<CreateItemRequest>({
@@ -37,7 +39,7 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
         const data = await categoryService.getCategories();
         setCategories(data);
       } catch (err) {
-        console.error('获取分类列表失败:', err);
+        console.error('error fetching categories:', err);
       }
     };
 
@@ -72,7 +74,7 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
     e.preventDefault();
     
     if (!formData.name.trim()) {
-      alert('请输入物品名称');
+      alert(t('please_enter_item_name'));
       return;
     }
 
@@ -87,19 +89,19 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
       };
       
       // 调试：打印请求数据
-      console.log('发送的数据:', submitData);
+      console.log('submit data:', submitData);
       
       const newItem = await itemService.createItem(submitData);
       
       // 调试：打印响应数据
-      console.log('创建成功:', newItem);
+      console.log('created:', newItem);
       
       onSuccess(newItem);
       resetForm();
       onClose();
     } catch (err) {
-      console.error('创建物品失败:', err);
-      alert('创建物品失败，请重试');
+      console.error('create item failed:', err);
+      alert(t('create_item_failed'));
     } finally {
       setLoading(false);
     }
@@ -119,7 +121,7 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">添加物品</h2>
+          <h2 className="text-xl font-bold">{t('add_item')}</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 text-2xl"
@@ -133,28 +135,28 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                物品名称 *
+                {t('item_name')} *
               </label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
                 className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="请输入物品名称"
+                placeholder={t('please_enter_item_name')}
                 required
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                子分类
+                {t('sub_category')}
               </label>
               <input
                 type="text"
                 value={formData.subCategory}
                 onChange={(e) => handleInputChange('subCategory', e.target.value)}
                 className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="子分类"
+                placeholder={t('sub_category')}
               />
             </div>
           </div>
@@ -162,27 +164,27 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                品牌
+                {t('brand')}
               </label>
               <input
                 type="text"
                 value={formData.brand}
                 onChange={(e) => handleInputChange('brand', e.target.value)}
                 className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="品牌"
+                placeholder={t('brand')}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                型号
+                {t('model')}
               </label>
               <input
                 type="text"
                 value={formData.model}
                 onChange={(e) => handleInputChange('model', e.target.value)}
                 className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="型号"
+                placeholder={t('model')}
               />
             </div>
           </div>
@@ -190,33 +192,33 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                状态
+                {t('status')}
               </label>
               <select
                 value={formData.status}
                 onChange={(e) => handleInputChange('status', parseInt(e.target.value))}
                 className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value={0}>正常使用</option>
-                <option value={1}>闲置</option>
-                <option value={2}>损坏</option>
-                <option value={3}>丢失</option>
-                <option value={4}>已售出</option>
-                <option value={5}>已捐赠</option>
-                <option value={6}>过期</option>
+                <option value={0}>{t('status_0')}</option>
+                <option value={1}>{t('status_1')}</option>
+                <option value={2}>{t('status_2')}</option>
+                <option value={3}>{t('status_3')}</option>
+                <option value={4}>{t('status_4')}</option>
+                <option value={5}>{t('status_5')}</option>
+                <option value={6}>{t('status_6')}</option>
               </select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                分类
+                {t('category')}
               </label>
               <select
                 value={formData.categoryId || ''}
                 onChange={(e) => handleInputChange('categoryId', e.target.value ? parseInt(e.target.value) : undefined)}
                 className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">选择分类</option>
+                <option value="">{t('select_category')}</option>
                 {categories.map((category) => (
                   <option key={category.categoryId} value={category.categoryId}>
                     {category.name}
@@ -228,26 +230,26 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              存放位置
+              {t('location')}
             </label>
             <input
               type="text"
               value={formData.location}
               onChange={(e) => handleInputChange('location', e.target.value)}
               className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="存放位置"
+              placeholder={t('location')}
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              备注
+              {t('notes')}
             </label>
             <textarea
               value={formData.notes}
               onChange={(e) => handleInputChange('notes', e.target.value)}
               className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="备注信息"
+              placeholder={t('notes_placeholder')}
               rows={3}
             />
           </div>
@@ -255,7 +257,7 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                价格
+                {t('price')}
               </label>
               <input
                 type="number"
@@ -263,13 +265,13 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
                 value={formData.price || ''}
                 onChange={(e) => handleInputChange('price', e.target.value ? parseFloat(e.target.value) : undefined)}
                 className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="价格"
+                placeholder={t('price')}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                数量
+                {t('quantity')}
               </label>
               <input
                 type="number"
@@ -277,7 +279,7 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
                 value={formData.quantity}
                 onChange={(e) => handleInputChange('quantity', parseInt(e.target.value))}
                 className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="数量"
+                placeholder={t('quantity')}
               />
             </div>
           </div>
@@ -285,7 +287,7 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                购买日期
+                {t('purchase_date')}
               </label>
               <input
                 type="date"
@@ -297,7 +299,7 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                过期日期
+                {t('expiry_date')}
               </label>
               <input
                 type="date"
@@ -311,7 +313,7 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                状态评分 (1-10)
+                {t('condition_score')} (1-10)
               </label>
               <input
                 type="number"
@@ -320,34 +322,34 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
                 value={formData.condition || ''}
                 onChange={(e) => handleInputChange('condition', e.target.value ? parseInt(e.target.value) : undefined)}
                 className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="状态评分"
+                placeholder={t('condition_score')}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                标签
+                {t('tags')}
               </label>
               <input
                 type="text"
                 value={formData.tags}
                 onChange={(e) => handleInputChange('tags', e.target.value)}
                 className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="标签，用逗号分隔"
+                placeholder={t('tags_placeholder')}
               />
             </div>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              图片URL
+              {t('image_url')}
             </label>
             <input
               type="url"
               value={formData.imageUrl}
               onChange={(e) => handleInputChange('imageUrl', e.target.value)}
               className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="图片URL"
+              placeholder={t('image_url')}
             />
           </div>
 
@@ -358,14 +360,14 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
               onClick={onClose}
               className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 transition"
             >
-              取消
+              {t('cancel')}
             </button>
             <button
               type="submit"
               disabled={loading}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition disabled:opacity-50"
             >
-              {loading ? '创建中...' : '创建物品'}
+              {loading ? t('creating') : t('create_item')}
             </button>
           </div>
         </form>
