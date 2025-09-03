@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using stuff_management_server.Data;
 using stuff_management_server.Models;
+using System.IO;
 
 namespace stuff_management_server.Controllers
 {
@@ -218,6 +219,143 @@ namespace stuff_management_server.Controllers
         private bool ItemExists(int id)
         {
             return _context.Items.Any(e => e.ItemId == id);
+        }
+
+        // POST: api/Item/upload-image
+        [HttpPost("upload-image")]
+        public async Task<ActionResult<object>> UploadImage(IFormFile file)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                {
+                    return BadRequest(new { error = "没有选择文件" });
+                }
+
+                // 验证文件类型
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+                var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    return BadRequest(new { error = "不支持的文件类型。只支持 JPG, PNG, GIF, WEBP 格式" });
+                }
+
+                // 验证文件大小 (最大 5MB)
+                if (file.Length > 5 * 1024 * 1024)
+                {
+                    return BadRequest(new { error = "文件大小不能超过 5MB" });
+                }
+
+                // 创建上传目录
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                // 生成唯一文件名
+                var fileName = $"{Guid.NewGuid()}{fileExtension}";
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                // 保存文件
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                // 返回文件URL
+                var baseUrl = $"{Request.Scheme}://{Request.Host}";
+                var fileUrl = $"{baseUrl}/uploads/{fileName}";
+                
+                Console.WriteLine($"图片上传成功: {fileUrl}");
+                
+                return Ok(new { 
+                    success = true, 
+                    imageUrl = fileUrl,
+                    fileName = fileName
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"图片上传失败: {ex.Message}");
+                return StatusCode(500, new { error = "图片上传失败", details = ex.Message });
+            }
+        }
+
+        // POST: api/Item/upload-multiple-images
+        [HttpPost("upload-multiple-images")]
+        public async Task<ActionResult<object>> UploadMultipleImages(IFormFileCollection files)
+        {
+            try
+            {
+                if (files == null || files.Count == 0)
+                {
+                    return BadRequest(new { error = "没有选择文件" });
+                }
+
+                // 验证文件数量 (最多10张)
+                if (files.Count > 10)
+                {
+                    return BadRequest(new { error = "最多只能上传10张图片" });
+                }
+
+                var uploadedUrls = new List<string>();
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+
+                // 创建上传目录
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                foreach (var file in files)
+                {
+                    if (file.Length == 0) continue;
+
+                    // 验证文件类型
+                    var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        return BadRequest(new { error = $"文件 {file.FileName} 格式不支持。只支持 JPG, PNG, GIF, WEBP 格式" });
+                    }
+
+                    // 验证文件大小 (最大 5MB)
+                    if (file.Length > 5 * 1024 * 1024)
+                    {
+                        return BadRequest(new { error = $"文件 {file.FileName} 大小不能超过 5MB" });
+                    }
+
+                    // 生成唯一文件名
+                    var fileName = $"{Guid.NewGuid()}{fileExtension}";
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    // 保存文件
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    // 添加到结果列表
+                    var baseUrl = $"{Request.Scheme}://{Request.Host}";
+                    var fileUrl = $"{baseUrl}/uploads/{fileName}";
+                    uploadedUrls.Add(fileUrl);
+                }
+
+                Console.WriteLine($"批量图片上传成功: {string.Join(", ", uploadedUrls)}");
+                
+                return Ok(new { 
+                    success = true, 
+                    imageUrls = uploadedUrls,
+                    count = uploadedUrls.Count
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"批量图片上传失败: {ex.Message}");
+                return StatusCode(500, new { error = "批量图片上传失败", details = ex.Message });
+            }
         }
     }
 } 

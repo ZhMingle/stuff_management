@@ -41,8 +41,8 @@ namespace stuff_management_server.Models
         [MaxLength(1000)]
         public string Notes { get; set; } = string.Empty;
         
-        [MaxLength(500)]
-        public string ImageUrl { get; set; } = string.Empty;
+        [MaxLength(2000)]
+        public string ImageUrl { get; set; } = string.Empty; // 逗号分隔的多张图片URL
         
         [Range(0, double.MaxValue)]
         public decimal? Price { get; set; }

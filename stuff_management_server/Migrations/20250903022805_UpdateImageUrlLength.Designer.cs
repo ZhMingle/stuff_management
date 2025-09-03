@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using stuff_management_server.Data;
 
@@ -11,9 +12,11 @@ using stuff_management_server.Data;
 namespace stuff_management_server.Migrations
 {
     [DbContext(typeof(StuffManagementContext))]
-    partial class StuffManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20250903022805_UpdateImageUrlLength")]
+    partial class UpdateImageUrlLength
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

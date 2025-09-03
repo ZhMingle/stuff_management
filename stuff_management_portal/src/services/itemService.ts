@@ -99,5 +99,33 @@ export const itemService = {
   async getItemStatistics(): Promise<any> {
     const response = await api.get('/Item/statistics');
     return response.data;
+  },
+
+  // 上传图片
+  async uploadImage(file: File): Promise<{ success: boolean; imageUrl: string; fileName: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await api.post('/Item/upload-image', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  // 批量上传图片
+  async uploadMultipleImages(files: File[]): Promise<{ success: boolean; imageUrls: string[]; count: number }> {
+    const formData = new FormData();
+    files.forEach(file => {
+      formData.append('files', file);
+    });
+    
+    const response = await api.post('/Item/upload-multiple-images', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
   }
 }; 
