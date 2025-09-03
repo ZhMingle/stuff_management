@@ -38,6 +38,8 @@ namespace stuff_management_server.Data
                 { 
                     CategoryId = 1, 
                     Name = "电子产品", 
+                    ZhName = "电子产品",
+                    EnName = "Electronics",
                     Description = "各种电子设备和配件",
                     Color = "#007bff",
                     SortOrder = 1,
@@ -49,6 +51,8 @@ namespace stuff_management_server.Data
                 { 
                     CategoryId = 2, 
                     Name = "服装鞋帽", 
+                    ZhName = "服装鞋帽",
+                    EnName = "Clothing & Shoes",
                     Description = "衣物、鞋子、帽子等",
                     Color = "#28a745",
                     SortOrder = 2,
@@ -60,6 +64,8 @@ namespace stuff_management_server.Data
                 { 
                     CategoryId = 3, 
                     Name = "书籍文具", 
+                    ZhName = "书籍文具",
+                    EnName = "Books & Stationery",
                     Description = "书籍、笔记本、文具用品",
                     Color = "#ffc107",
                     SortOrder = 3,
@@ -71,6 +77,8 @@ namespace stuff_management_server.Data
                 { 
                     CategoryId = 4, 
                     Name = "家居用品", 
+                    ZhName = "家居用品",
+                    EnName = "Home & Living",
                     Description = "家具、装饰品、生活用品",
                     Color = "#dc3545",
                     SortOrder = 4,
@@ -82,6 +90,8 @@ namespace stuff_management_server.Data
                 { 
                     CategoryId = 5, 
                     Name = "其他", 
+                    ZhName = "其他",
+                    EnName = "Other",
                     Description = "其他未分类物品",
                     Color = "#6c757d",
                     SortOrder = 999,

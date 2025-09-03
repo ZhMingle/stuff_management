@@ -30,7 +30,7 @@ interface AddItemModalProps {
 }
 
 export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModalProps) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -270,8 +270,8 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
             <FormControl fullWidth variant="outlined">
               <InputLabel>{t('category')}</InputLabel>
               <Select
-                value={formData.categoryId?.toString() || ''}
-                onChange={(e) => handleInputChange('categoryId', e.target.value ? parseInt(e.target.value) : undefined)}
+                value={formData.categoryId ?? ''}
+                onChange={(e) => handleInputChange('categoryId', String(e.target.value) === '' ? undefined : Number(e.target.value))}
                 label={t('category')}
               >
                 <MenuItem value="">
@@ -279,7 +279,9 @@ export default function AddItemModal({ isOpen, onClose, onSuccess }: AddItemModa
                 </MenuItem>
                 {categories.map((category) => (
                   <MenuItem key={category.categoryId} value={category.categoryId}>
-                    {category.name}
+                    {language === 'en'
+                      ? category.enName || category.name
+                      : category.zhName || category.name}
                   </MenuItem>
                 ))}
               </Select>

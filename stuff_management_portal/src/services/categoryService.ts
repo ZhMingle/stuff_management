@@ -4,6 +4,8 @@ import api from './api';
 export interface Category {
   categoryId?: number;
   name: string;
+  zhName?: string;
+  enName?: string;
   description?: string;
   icon?: string;
   color?: string;

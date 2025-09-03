@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using stuff_management_server.Data;
 
@@ -11,9 +12,11 @@ using stuff_management_server.Data;
 namespace stuff_management_server.Migrations
 {
     [DbContext(typeof(StuffManagementContext))]
-    partial class StuffManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20250903091623_AddCategoryMultiLangFields")]
+    partial class AddCategoryMultiLangFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,14 +92,12 @@ namespace stuff_management_server.Migrations
                             Color = "#007bff",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "各种电子设备和配件",
-                            EnName = "Electronics",
                             Icon = "",
                             IsActive = true,
                             IsDefault = false,
                             Name = "电子产品",
                             SortOrder = 1,
-                            UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            ZhName = "电子产品"
+                            UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -104,14 +105,12 @@ namespace stuff_management_server.Migrations
                             Color = "#28a745",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "衣物、鞋子、帽子等",
-                            EnName = "Clothing & Shoes",
                             Icon = "",
                             IsActive = true,
                             IsDefault = false,
                             Name = "服装鞋帽",
                             SortOrder = 2,
-                            UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            ZhName = "服装鞋帽"
+                            UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -119,14 +118,12 @@ namespace stuff_management_server.Migrations
                             Color = "#ffc107",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "书籍、笔记本、文具用品",
-                            EnName = "Books & Stationery",
                             Icon = "",
                             IsActive = true,
                             IsDefault = false,
                             Name = "书籍文具",
                             SortOrder = 3,
-                            UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            ZhName = "书籍文具"
+                            UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -134,14 +131,12 @@ namespace stuff_management_server.Migrations
                             Color = "#dc3545",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "家具、装饰品、生活用品",
-                            EnName = "Home & Living",
                             Icon = "",
                             IsActive = true,
                             IsDefault = false,
                             Name = "家居用品",
                             SortOrder = 4,
-                            UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            ZhName = "家居用品"
+                            UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -149,14 +144,12 @@ namespace stuff_management_server.Migrations
                             Color = "#6c757d",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "其他未分类物品",
-                            EnName = "Other",
                             Icon = "",
                             IsActive = true,
                             IsDefault = true,
                             Name = "其他",
                             SortOrder = 999,
-                            UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            ZhName = "其他"
+                            UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });
 

@@ -1,3 +1,5 @@
+
+
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -46,14 +48,15 @@ import AddItemModal from '../../components/modals/AddItemModal';
 import ImagePreviewModal from '../../components/modals/ImagePreviewModal';
 import { useI18n } from '../../components/i18n/I18nProvider';
 
+export default function ItemsPage() {
+
 interface EditableItem extends Item {
   isEditing?: boolean;
   editData?: Partial<Item>;
   images?: string[];
 }
 
-export default function ItemsPage() {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const [items, setItems] = useState<EditableItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -141,7 +144,12 @@ export default function ItemsPage() {
   const getCategoryName = (categoryId?: number) => {
     if (!categoryId) return t('uncategorized');
     const category = categories.find(cat => cat.categoryId === categoryId);
-    return category?.name || t('uncategorized');
+    if (!category) return t('uncategorized');
+    if (language === 'en') {
+      return category.enName || category.name;
+    } else {
+      return category.zhName || category.name;
+    }
   };
 
   // 处理添加物品成功
@@ -484,15 +492,17 @@ export default function ItemsPage() {
                     {item.isEditing ? (
                       <FormControl size="small" fullWidth>
                         <Select
-                          value={item.editData?.categoryId?.toString() || ''}
-                          onChange={(e) => handleEditChange(item.itemId!, 'categoryId', e.target.value ? parseInt(e.target.value) : undefined)}
+                          value={item.editData?.categoryId ?? ''}
+                          onChange={(e) => handleEditChange(item.itemId!, 'categoryId', String(e.target.value) === '' ? undefined : Number(e.target.value))}
                         >
                           <MenuItem value="">
                             <em>{t('select_category')}</em>
                           </MenuItem>
                           {categories.map((category) => (
                             <MenuItem key={category.categoryId} value={category.categoryId}>
-                              {category.name}
+                              {language === 'en'
+                                ? category.enName || category.name
+                                : category.zhName || category.name}
                             </MenuItem>
                           ))}
                         </Select>
@@ -700,4 +710,4 @@ export default function ItemsPage() {
       </Dialog>
     </Box>
   );
-} 
+}

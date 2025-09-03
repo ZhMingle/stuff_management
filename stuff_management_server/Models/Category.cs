@@ -9,9 +9,15 @@ namespace stuff_management_server.Models
         [Key]
         public int CategoryId { get; set; }
         
-        [Required]
-        [MaxLength(50)]
-        public string Name { get; set; } = string.Empty;
+    [Required]
+    [MaxLength(50)]
+    public string Name { get; set; } = string.Empty;
+
+    [MaxLength(50)]
+    public string? ZhName { get; set; }
+
+    [MaxLength(50)]
+    public string? EnName { get; set; }
         
         [MaxLength(200)]
         public string Description { get; set; } = string.Empty;

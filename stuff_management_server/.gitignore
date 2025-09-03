@@ -1,3 +1,5 @@
+# 忽略上传图片目录
+wwwroot/uploads/
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
